@@ -13,4 +13,7 @@ Starter project and directory structure to use PyQt5 with Django ORM
 
 Add appName to INSTALLED_APPS in settings.py
 
+`INSTALLED_APPS = ["apps.appName",]`
+
+
 Now you can start using your model inside your main application
