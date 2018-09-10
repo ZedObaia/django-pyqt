@@ -86,7 +86,10 @@ def migrate_apps(apps):
         # Migrate all apps
         for app in os.listdir(appsDir):
             if os.path.isdir(os.path.join(appsDir, app)):
-                apps_to_migrate.append(app)
+                if app == "__pycache__":
+                    pass
+                else:
+                    apps_to_migrate.append(app)
     else:
         for app in apps:
             if os.path.isdir(os.path.join(appsDir, app)):
