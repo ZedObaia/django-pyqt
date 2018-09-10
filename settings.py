@@ -1,14 +1,15 @@
 import os
-
+import sys
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = '-uh7xo(=5e(@wh%9ugm!)n4ndh4cdm04ws=uzx$moj^zhazv6%'  # USE YOUR KEY
 DEBUG = True
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+
 
 # Application definition
 # Add you applications here
 INSTALLED_APPS = [
-
 ]
 
 DATABASES = {

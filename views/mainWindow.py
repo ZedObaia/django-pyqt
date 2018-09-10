@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/zed/workspace/proj/forms/mainWindow.ui'
+# Form implementation generated from reading ui file '/home/zed/workspace/pyqt5-django-orm/forms/mainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.10.1
 #
