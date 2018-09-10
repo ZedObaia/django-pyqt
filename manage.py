@@ -2,6 +2,7 @@
 import os
 import subprocess
 import argparse
+import shutil
 try:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
     from django.core.wsgi import get_wsgi_application
@@ -126,7 +127,7 @@ if __name__ == '__main__':
     ap.add_argument("-s", "--startapp", help="start new app", nargs='*', action="store", dest="startapp")
     ap.add_argument("-m", '--migrate', help='Migrate apps', nargs='*', action="store", dest="migrate")
     ap.add_argument("-d", "--django", help="Run Django command", nargs='*', action="store", dest="django")
-
+    ap.add_argument("--deploy", help="Deploy using pyinstaller", action='store_true', dest='deploy')
     args = vars(ap.parse_args())
     if args['startapp'] is not None:
         for app in args['startapp']:
@@ -138,5 +139,9 @@ if __name__ == '__main__':
     if args["django"] is not None:
         execute_django_command(args["django"])
 
-
-
+    if args['deploy']:
+        os.system("pyinstaller __main__.py --hidden-import http.cookies --hidden-import html.parser --hidden-import settings --hidden-import django.template.defaulttags --hidden-import django.template.loader_tags --hidden-import django.templatetags.i18n")
+        if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+            dist_dir = os.path.join(os.path.join(settings.BASE_DIR, 'dist'), '__main__')
+            if os.path.isdir(dist_dir):
+                shutil.copy(settings.DATABASES['default']['NAME'], dist_dir)
