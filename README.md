@@ -1,9 +1,11 @@
 # pyqt5-django-orm
 Starter project and directory structure to use PyQt5 with Django 2 ORM for *nix systems
-Tested wil PyQt5.11 and Django 2.1
 
-Not that you need PyQt5 and Django to be already installed
-#Installation
+Tested with PyQt5.11 and Django 2.1 on Ubuntu 18.4
+
+Note that you need PyQt5 and Django to be already installed
+
+# Installation
 >Clone the repo then run:
 `sudo ./setup.py`
 
