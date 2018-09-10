@@ -1,5 +1,5 @@
 # pyqt5-django-orm
-Starter project and directory structure to use PyQt5 with Django ORM for *nix systems
+Starter project and directory structure to use PyQt5 with Django 2 ORM for *nix systems
 
 Not that you need PyQt5 and Django to be already installed
 #Installation
