@@ -45,7 +45,8 @@ Note that leaving apps blank will try to migrate all apps
 `python3 manage.py --uic [file1.ui, file2.ui]`
 
 Note that leaving files blank will compile all UI files inside forms directory
-
+#### Using Pyinstaller 
+`python3 manage.py --deploy`
 
 #### Start coding !
 Now you can start using your model inside your application
