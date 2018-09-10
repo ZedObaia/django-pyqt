@@ -1,4 +1,3 @@
 .idea
 __pycache__
-setup.py
 db.sqlite3

@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+import os
+import shutil
+import argparse
+import errno
+
+
+def copy(src, dest):
+    try:
+        shutil.copytree(src, dest, ignore=shutil.ignore_patterns('setup.py', 'db.sqlite3', '.*', '__pycache__', 'README.md'))
+    except OSError as e:
+        # If the error was caused because the source wasn't a directory
+        if e.errno == errno.ENOTDIR:
+            shutil.copy(src, dest)
+        else:
+            print('Directory not copied. Error: %s' % e)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-s", "--startproject", nargs='*')
+    USAGE = 'usage : pyqt-admin --startproject project_name destination'
+    try :
+        args = vars(ap.parse_args())
+    except:
+        print('')
+        print(USAGE)
+        ap.exit()
+
+    if args['startproject']:
+        home_dir = os.path.expanduser('~')
+        template_dir = os.path.join(home_dir, '.pyqt5-django-orm')
+        if not os.path.exists(template_dir):
+            print('Please follow installation instructions')
+            return
+        proj_name = ''
+        destination = ''
+        proj_name = args["startproject"][0]
+
+        if len(args['startproject']) == 1:
+            print("using default destination for project '{}'".format(home_dir))
+            destination = home_dir
+        elif len(args['startproject']) > 1:
+            destination = args["startproject"][1]
+            if not os.path.isdir(destination):
+                print("Destination does not exist, using default destination '{}'".format(home_dir))
+                destination = home_dir
+            else :
+                destination = os.path.abspath(destination)
+        path = os.path.join(destination, proj_name)
+        if os.path.exists(path):
+            shutil.rmtree(path)
+        copy(template_dir, path)
+    else:
+        print(USAGE)
+        ap.exit()
+
+
+if __name__ == '__main__':
+    main()

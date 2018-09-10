@@ -119,7 +119,7 @@ def execute_django_command(cmd):
 if __name__ == '__main__':
     # Parse arguments and make sure they are valid
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--convert", help="compile ui forms", nargs='*', action="store", dest="convert")
+    ap.add_argument("--uic", help="compile ui forms", nargs='*', action="store", dest="uic")
     ap.add_argument("-s", "--startapp", help="start new app", nargs='*', action="store", dest="startapp")
     ap.add_argument("-m", '--migrate', help='Migrate apps', nargs='*', action="store", dest="migrate")
     ap.add_argument("-d", "--django", help="Run Django command", nargs='*', action="store", dest="django")
@@ -128,8 +128,8 @@ if __name__ == '__main__':
     if args['startapp'] is not None:
         for app in args['startapp']:
             start_new_app(app)
-    if args['convert'] is not None:
-        compile_sources(args['convert'])
+    if args['uic'] is not None:
+        compile_sources(args['uic'])
     if args['migrate'] is not None:
         migrate_apps(args['migrate'])
     if args["django"] is not None:
