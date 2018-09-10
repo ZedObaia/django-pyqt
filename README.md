@@ -7,7 +7,7 @@ Not that you need PyQt5 and Django to be already installed
 `sudo ./setup.py`
 
 ## Usage
-#####Start new project using
+##### Start new project using
 
 `pyqt5-admin --startproject proj_name destination`
 
@@ -24,28 +24,28 @@ Project Structure:
 ├── settings.py
 
 ```
-####Django Commands
-#####Create a new django app inside the apps directory
+#### Django Commands
+##### Create a new django app inside the apps directory
 
 `python3 manage.py.py --startapp appName`
 
-#####Add appName to INSTALLED_APPS in settings.py
+##### Add appName to INSTALLED_APPS in settings.py
 
 `INSTALLED_APPS = ["apps.appName",]`
 
-#####To Migrate your models
+##### To Migrate your models
 `python3 manage.py --migrate [app1, app2, ...]`
 
 Note that leaving apps blank will try to migrate all apps
 
-####PyQt5 Commands
+#### PyQt5 Commands
 
-#####Convert `*.ui` files to `.py` files using `pyuic5` assuming pyuic5 is on path
+##### Convert `*.ui` files to `.py` files using `pyuic5` assuming pyuic5 is on path
 
 `python3 manage.py --uic [file1.ui, file2.ui]`
 
 Note that leaving files blank will compile all UI files inside forms directory
 
 
-####Start coding !
+#### Start coding !
 Now you can start using your model inside your application
