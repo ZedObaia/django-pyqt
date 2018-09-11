@@ -37,6 +37,7 @@ except Exception:
     print("There was an error loading django modules. Make sure you have django installed")
     sys.exit()
 
+
 # Your models go here
 # class User(models.Model):
 #     username = models.CharField(max_length=255)
@@ -120,6 +121,38 @@ def execute_django_command(cmd):
     execute_from_command_line(command)
 
 
+def deploy():
+    hidden_imports = ['http.cookies', 'html.parser',
+                        'settings', 'apps', 'django.template.defaulttags',
+                        'django.templatetags.i18n', 'django.template.loader_tags',
+                        'django.utils.translation'
+                        ]
+    for app in settings.INSTALLED_APPS:
+        if app.startswith('django.'):
+            hidden_imports.append(app + '.apps')
+        else:
+            hidden_imports.append(app)
+
+            cmd = "pyinstaller __main__.py "
+    for i in hidden_imports:
+        cmd += " --hidden-import "
+        cmd += i
+
+    os.system(cmd)
+    if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+        dist_dir = os.path.join(os.path.join(settings.BASE_DIR, 'dist'), '__main__')
+        if os.path.isdir(dist_dir):
+            shutil.copy(settings.DATABASES['default']['NAME'], dist_dir)
+    if settings.LANGUAGES is not None:
+        for lang in settings.LANGUAGES:
+            execute_django_command(["makemessages", "-l", lang[0]])
+        execute_django_command(["compilemessages"])
+        try:
+            shutil.copytree(settings.LOCALE_PATHS[0], os.path.join(dist_dir, '.locale'))
+        except Exception as e:
+            print(e)
+
+
 if __name__ == '__main__':
     # Parse arguments and make sure they are valid
     ap = argparse.ArgumentParser()
@@ -140,8 +173,4 @@ if __name__ == '__main__':
         execute_django_command(args["django"])
 
     if args['deploy']:
-        os.system("pyinstaller __main__.py --hidden-import http.cookies --hidden-import html.parser --hidden-import settings --hidden-import django.template.defaulttags --hidden-import django.template.loader_tags --hidden-import django.templatetags.i18n")
-        if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
-            dist_dir = os.path.join(os.path.join(settings.BASE_DIR, 'dist'), '__main__')
-            if os.path.isdir(dist_dir):
-                shutil.copy(settings.DATABASES['default']['NAME'], dist_dir)
+        deploy()
