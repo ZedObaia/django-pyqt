@@ -7,7 +7,7 @@ import errno
 def copy(src, dest):
     try:
         shutil.copytree(src, dest, ignore=shutil.ignore_patterns('setup.py', 'db.sqlite3', '.*',
-         '__pycache__', 'pyqt5-admin', 'build', 'dist', '__main__.spec'))
+         '__pycache__', 'pyqt5-admin', 'build', 'dist', '__main__.spec', 'examples'))
     except OSError as e:
         # If the error was caused because the source wasn't a directory
         if e.errno == errno.ENOTDIR:
