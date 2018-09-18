@@ -1,85 +1,119 @@
 #!/usr/bin/env python3
 import os
 import subprocess
-import argparse
+import sys
 import shutil
+import re
+
+
 try:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
     from django.core.wsgi import get_wsgi_application
+
     application = get_wsgi_application()
 
 except Exception as e:
     print(e)
 
 from django.conf import settings
+
 formsDir = os.path.join(settings.BASE_DIR, 'forms')
+resDir = os.path.join(settings.BASE_DIR, 'resources')
 viewsDir = os.path.join(settings.BASE_DIR, 'views')
 appsDir = os.path.join(settings.BASE_DIR, 'apps')
 
 
 def start_new_app(app_name):
+
     dir_name = os.path.join(appsDir, app_name)
     if os.path.exists(dir_name):
         print("App with the same <{}> name already exists".format(app_name))
         return
     os.mkdir(dir_name)
-    models_file = os.path.join(dir_name, 'models.py')
-    init_file = os.path.join(dir_name, '__init__.py')
-    if not os.path.exists(init_file):
-        f = open(init_file, 'w')
-        f.close()
-    if not os.path.exists(models_file):
-        f = open(models_file, 'w')
-        f.write('''import sys
-try:
-    from django.db import models
-except Exception:
-    print("There was an error loading django modules. Make sure you have django installed")
-    sys.exit()
+    print(dir_name)
+    temp_path = os.path.join("apps", app_name)
+    if app_name.islower():
+        execute_django_command(["startapp", app_name.upper(), temp_path])
+    elif app_name.isupper():
+        execute_django_command(["startapp", app_name.lower(), temp_path])
 
+    for filename in os.listdir(dir_name):
+        if filename == "models.py" or filename == "migrations" or filename == "__init__.py":
+            pass
+        else:
+            if os.path.isfile(os.path.join(dir_name, filename)):
+                try:
+                    os.remove(os.path.join(dir_name, filename))
+                    deleted = True
+                except Exception as e:
+                    print(e)
+            else:
+                try:
+                    shutil.rmtree(os.path.join(dir_name, filename))
+                except Exception as e:
+                    print(e)
 
-# Your models go here
-# class User(models.Model):
-#     username = models.CharField(max_length=255)
-''')
-        f.close()
     print("Created app <{}> in apps directory".format(app_name))
 
 
-def compile_sources(files):
+def compile_sources(files, cmd=""):
+    if cmd == "uic":
+        command = "pyuic5"
+        options = ["--from-imports"]
+        extension = ".ui"
+        src_dir = formsDir
+    elif cmd == "rcc":
+        command = "pyrcc5"
+        options = []
+        extension = ".qrc"
+        src_dir = resDir
+    process_list = []
+    process_list.append(command)
+    for opt in options:
+        process_list.append(opt)
+
     ui_files = []
     if len(files) == 0:
-        for filename in os.listdir(formsDir):
-            if filename.endswith(".ui"):
-                ui_files.append(os.path.join(formsDir, filename))
+        for filename in os.listdir(src_dir):
+            if filename.endswith(extension):
+                ui_files.append(os.path.join(src_dir, filename))
     else:
         for filename in files:
-            path = os.path.join(formsDir, filename)
+            path = os.path.join(src_dir, filename)
             if os.path.isfile(path):
                 ui_files.append(path)
-            else :
-                print("UI File <{}> does not exist, make sure you typed the name correctly".format(filename))
+            else:
+                print("File <{}> does not exist, make sure you typed the name correctly".format(filename))
     for filename in ui_files:
         out_name = os.path.splitext(os.path.basename(filename))[0]
-        out_basename = out_name + '.py'
+        if cmd == "uic":
+            out_basename = out_name + '.py'
+        elif cmd == "rcc":
+            out_basename = out_name + '_rc.py'
         outfile = os.path.join(viewsDir, out_basename)
+        process_list.append(filename)
+        process_list.append("-o")
+        process_list.append(outfile)
         process_prepare = subprocess.Popen(
-            ["pyuic5", filename, '-o', outfile], stdout=subprocess.PIPE, universal_newlines=True)
+            process_list, stdout=subprocess.PIPE, universal_newlines=True)
         out, err = process_prepare.communicate()
         if err:
             print(err)
         else:
-            print("Converting <{}.ui> to <{}.py> ".format(out_name, out_name))
-            views_init = os.path.join(viewsDir, '__init__.py')
-            f = open(views_init, 'r')
-            lines = f.readlines()
-            f.close()
-            f = open(views_init, 'a')
-            line = 'from . import {}\n'.format(out_name)
-            if line not in lines:
-                f.write(line)
-                f.write('\n')
-            f.close()
+            if cmd == "uic":
+                print("Converting <{}.ui> to <{}.py> ".format(out_name, out_name))
+                views_init = os.path.join(viewsDir, '__init__.py')
+                f = open(views_init, 'r')
+                lines = f.readlines()
+                f.close()
+                f = open(views_init, 'a')
+                line = 'from . import {}\n'.format(out_name)
+                if line not in lines:
+                    f.write(line)
+                    f.write('\n')
+                f.close()
+            elif cmd == "rcc":
+                print("Converting <{}.qrc> to <{}_rc.py> ".format(out_name, out_name))
 
 
 def migrate_apps(apps):
@@ -118,15 +152,15 @@ def execute_django_command(cmd):
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-    execute_from_command_line(command)
+    return execute_from_command_line(command)
 
 
 def deploy():
     hidden_imports = ['http.cookies', 'html.parser',
-                        'settings', 'apps', 'django.template.defaulttags',
-                        'django.templatetags.i18n', 'django.template.loader_tags',
-                        'django.utils.translation'
-                        ]
+                      'settings', 'apps', 'django.template.defaulttags',
+                      'django.templatetags.i18n', 'django.template.loader_tags',
+                      'django.utils.translation'
+                      ]
     for app in settings.INSTALLED_APPS:
         if app.startswith('django.'):
             hidden_imports.append(app + '.apps')
@@ -155,22 +189,29 @@ def deploy():
 
 if __name__ == '__main__':
     # Parse arguments and make sure they are valid
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--uic", help="compile ui forms", nargs='*', action="store", dest="uic")
-    ap.add_argument("-s", "--startapp", help="start new app", nargs='*', action="store", dest="startapp")
-    ap.add_argument("-m", '--migrate', help='Migrate apps', nargs='*', action="store", dest="migrate")
-    ap.add_argument("-d", "--django", help="Run Django command", nargs='*', action="store", dest="django")
-    ap.add_argument("--deploy", help="Deploy using pyinstaller", action='store_true', dest='deploy')
-    args = vars(ap.parse_args())
-    if args['startapp'] is not None:
-        for app in args['startapp']:
-            start_new_app(app)
-    if args['uic'] is not None:
-        compile_sources(args['uic'])
-    if args['migrate'] is not None:
-        migrate_apps(args['migrate'])
-    if args["django"] is not None:
-        execute_django_command(args["django"])
-
-    if args['deploy']:
+    if len(sys.argv) < 2:
+        execute_django_command(["help"])
+        sys.exit()
+    command = sys.argv[1]
+    if command == "startapp" and len(sys.argv) > 2:
+        for app_name in sys.argv[2:]:
+            if re.match("^(?![0-9])[a-zA-Z0-9_]*$", app_name):
+                start_new_app(app_name)
+            else:
+                print(
+                    "CommandError: '{}' is not a valid app name. Please make sure the name is a valid identifier.".format(
+                        app_name))
+    elif command == "migrate":
+        migrate_apps(sys.argv[2:], cmd=command)
+    elif command == "makemigrations":
+        migrate_apps(sys.argv[2:], cmd=command)
+    elif command == "uic":
+        compile_sources(sys.argv[2:], cmd=command)
+    elif command == "rcc":
+        compile_sources(sys.argv[2:], cmd=command)
+    elif command == "deploy":
         deploy()
+    else:
+        execute_django_command(sys.argv[1:])
+
+
