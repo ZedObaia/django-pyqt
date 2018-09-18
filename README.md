@@ -22,7 +22,7 @@ Project Structure:
 ├── forms -> where Qt *.ui files go
 ├── resources -> where Qt *.qrc files and assets(images, fonts, ...) go
 ├── viewManagers -> your views controllers go here
-├── views -> where pyuic5 generated *.py files go
+├── views -> where pyuic5 & pyrcc5 generated *.py files go
 ├── __main__.py -> start point for your application
 ├── manage.py 
 ├── settings.py
