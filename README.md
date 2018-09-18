@@ -46,7 +46,7 @@ Project Structure:
 Note that leaving apps blank will try to migrate all apps
 
 ##### To use other django manage.py commands
-`python3 manage.py command`
+`python3 manage.py commandm`
 
 #### PyQt5 Commands
 
