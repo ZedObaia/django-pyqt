@@ -1,4 +1,4 @@
-# pyqt5-django-orm
+# django-pyqt
 Starter project and directory structure to use PyQt5 with Django 2 ORM for *nix systems
 
 Tested with PyQt5.11 and Django 2.1 on Ubuntu 18.4
