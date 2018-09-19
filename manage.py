@@ -116,7 +116,7 @@ def compile_sources(files, cmd=""):
                 print("Converting <{}.qrc> to <{}_rc.py> ".format(out_name, out_name))
 
 
-def migrate_apps(apps):
+def migrate_apps(apps, cmd=""):
     apps_to_migrate = ["makemigrations"]
     if len(apps) == 0:
         # Migrate all apps
@@ -134,10 +134,12 @@ def migrate_apps(apps):
                 print("App <{}> does not exist, make sure you typed the name correctly".format(app))
                 print('')
 
-    print('Preparing')
-    execute_django_command(apps_to_migrate)
-    print("Migrating")
-    execute_django_command(['migrate'])
+    if cmd == "makemigrations":
+        print('Preparing')
+        execute_django_command(apps_to_migrate)
+    elif cmd == "migrate":
+        print("Migrating")
+        execute_django_command(['migrate'])
 
 
 def execute_django_command(cmd):
