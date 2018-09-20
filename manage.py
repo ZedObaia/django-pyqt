@@ -67,10 +67,10 @@ def compile_sources(files, cmd=""):
         options = []
         extension = ".qrc"
         src_dir = resDir
-    process_list = []
-    process_list.append(command)
+    original_process_list = []
+    original_process_list.append(command)
     for opt in options:
-        process_list.append(opt)
+        original_process_list.append(opt)
 
     ui_files = []
     if len(files) == 0:
@@ -85,6 +85,7 @@ def compile_sources(files, cmd=""):
             else:
                 print("File <{}> does not exist, make sure you typed the name correctly".format(filename))
     for filename in ui_files:
+        process_list = original_process_list.copy()
         out_name = os.path.splitext(os.path.basename(filename))[0]
         if cmd == "uic":
             out_basename = out_name + '.py'
@@ -114,7 +115,6 @@ def compile_sources(files, cmd=""):
                 f.close()
             elif cmd == "rcc":
                 print("Converting <{}.qrc> to <{}_rc.py> ".format(out_name, out_name))
-
 
 def migrate_apps(apps, cmd=""):
     apps_to_migrate = ["makemigrations"]
@@ -207,9 +207,7 @@ if __name__ == '__main__':
         migrate_apps(sys.argv[2:], cmd=command)
     elif command == "makemigrations":
         migrate_apps(sys.argv[2:], cmd=command)
-    elif command == "uic":
-        compile_sources(sys.argv[2:], cmd=command)
-    elif command == "rcc":
+    elif command == "uic" or command == "rcc":
         compile_sources(sys.argv[2:], cmd=command)
     elif command == "deploy":
         deploy()
