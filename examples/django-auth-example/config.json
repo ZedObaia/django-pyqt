@@ -1,0 +1,8 @@
+{
+    "binding" : "pyqt5",
+    "paths" : 
+    {
+        "rcc" : "",
+        "uic" : ""
+    }
+}
