@@ -91,7 +91,7 @@ Now you can start using django (models, authentication, ... ) inside your applic
 ### TODO
 
 <ul>
-    <li>Add support fow windows</li>
+    <li>Add support for windows</li>
     <li>fix pyinstaller issues</li>
     <li>create a vscode package</li>
 </ul>
