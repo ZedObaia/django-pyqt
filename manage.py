@@ -4,6 +4,7 @@ import subprocess
 import sys
 import shutil
 import re
+import json
 
 
 try:
@@ -21,7 +22,7 @@ formsDir = os.path.join(settings.BASE_DIR, 'forms')
 resDir = os.path.join(settings.BASE_DIR, 'resources')
 viewsDir = os.path.join(settings.BASE_DIR, 'views')
 appsDir = os.path.join(settings.BASE_DIR, 'apps')
-
+configFile = os.path.join(settings.BASE_DIR, 'config.json')
 
 def start_new_app(app_name):
 
@@ -57,13 +58,58 @@ def start_new_app(app_name):
 
 
 def compile_sources(files, cmd=""):
+    if not os.path.isfile(configFile):
+        print("Missing config.json")
+        return
+    with open(configFile) as f:
+        config = json.load(f)
+    binding_list = ["pyqt5", "pyqt4", "pyside", "pyside2"]
+    uic_list = ["pyuic5", "pyuic4", "pyside-uic", "pyside2-uic"]
+    rcc_list = ["pyrcc5", "pyrcc4", "pyside-rcc", "pyside2-rcc"]
+    binding = ""
+    uic_path = ""
+    rcc_path = ""
+    try:
+        if config['binding'].lower() in binding_list :
+            binding = config['binding'].lower()
+        elif len(config['binding']) > 0:
+            print("Unknown binding <{}>".format(config['binding']))
+            return
+        else:
+            print("Empty binding in config file!")
+            return
+    except Exception as e:
+        print("Please add field {} in config.json".format(e))
+        return
+    
     if cmd == "uic":
-        command = "pyuic5"
+        try:
+            uic_path = config["paths"]["uic"]
+            if len(uic_path.strip()) == 0:
+                print("Empty uic path in config file, using default <{}> on path".format(uic_list[binding_list.index(binding)]))
+                uic_path = uic_list[binding_list.index(binding)]
+        except Exception as e:
+            print("uic path is not found in config.json, using default <{}> on path".format(uic_list[binding_list.index(binding)]))
+            uic_path = uic_list[binding_list.index(binding)]
+
+    
+    if cmd == "rcc":   
+        try:
+            rcc_path = config["paths"]["rcc"]
+            if len(rcc_path.strip()) == 0:
+                print("Empty rcc path in config file, using default <{}> on path".format(rcc_list[binding_list.index(binding)]))
+                rcc_path = rcc_list[binding_list.index(binding)]
+        except Exception as e:
+            print("uic path is not found in config.json, using default <{}> on path".format(rcc_list[binding_list.index(binding)]))
+            rcc_path = rcc_list[binding_list.index(binding)]
+
+    if cmd == "uic":
+        command = uic_path
         options = ["--from-imports"]
         extension = ".ui"
         src_dir = formsDir
     elif cmd == "rcc":
-        command = "pyrcc5"
+        command = rcc_path
         options = []
         extension = ".qrc"
         src_dir = resDir
