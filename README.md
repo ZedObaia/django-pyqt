@@ -94,4 +94,5 @@ Now you can start using django (models, authentication, ... ) inside your applic
     <li>Add support for windows</li>
     <li>fix pyinstaller issues</li>
     <li>create a vscode package</li>
+    <li>create a pip package</li>
 </ul>
