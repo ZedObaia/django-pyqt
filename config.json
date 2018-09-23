@@ -5,7 +5,7 @@
         "rcc" : "",
         "uic" : ""
     },
-    "django" : false,
+    "django" : true,
     "hidden-imports" : [],
     "hidden-example" : ["http.cookies", "html.parser",
         "settings", "django.template.defaulttags",

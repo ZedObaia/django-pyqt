@@ -1,9 +1,12 @@
 # django-pyqt
-Starter project and directory structure to use PyQt5 with Django 2 ORM for *nix systems
+This is a tool to help you develop desktop applications using Python Qt bindings of your choice for the 'front end' with django ORM for the backend.
+
+ Currently we only support *nix.
 
 Tested with PyQt5.11 and Django 2.1 on Ubuntu 18.4
 
 Note that you need PyQt5 and Django to be already installed
+***
 
 # Installation
 >Clone the repo then run:
@@ -12,7 +15,7 @@ Note that you need PyQt5 and Django to be already installed
 ## Usage
 ##### Start new project using
 
-`pyqt5-admin --startproject proj_name destination`
+`pyqt-admin --startproject proj_name destination`
 
 
 Project Structure:
@@ -24,10 +27,19 @@ Project Structure:
 ├── viewManagers -> your views controllers go here
 ├── views -> where pyuic5 & pyrcc5 generated *.py files go
 ├── __main__.py -> start point for your application
-├── manage.py 
+├── manage.py
 ├── settings.py
-
+├── config.json
 ```
+***
+Edit  `config.json` to change the binding i.e (PyQt4, PyQt4, PySide or PySide2)
+PyQt5 by default.
+
+set `django` to `false` to only use qt with the same commands.
+
+Edit `hidden-imports` to add imports for pyinstaller
+***
+
 #### Django Commands
 ##### Create a new django app inside the apps directory
 
@@ -48,20 +60,38 @@ Note that leaving apps blank will try to migrate all apps
 ##### To use other django manage.py commands
 `python3 manage.py commandm`
 
-#### PyQt5 Commands
+***
+#### Qt Commands
 
-##### Convert `*.ui` files to `.py` files using `pyuic5` assuming pyuic5 is on path
+##### Convert `*.ui` files to `.py` files using `uic` command
 
 `python3 manage.py uic [file1.ui, file2.ui]`
 
 Note that leaving files blank will compile all UI files inside forms directory
 
-##### Convert `*.qrc` files to `.py` files using `pyrcc5` assuming pyrcc5 is on path
+##### Convert `*.qrc` files to `.py` files using `rcc` 
 
 `python3 manage.py rcc [file1.ui, file2.ui]`
 
-#### Using Pyinstaller 
+#### Using Pyinstaller
 `python3 manage.py deploy`
 
+
+
 #### Start coding !
-Now you can start using your model inside your application
+Now you can start using django (models, authentication, ... ) inside your application
+
+***
+### Known Issues
+
+<ul>
+    <li>PyInstaller deployment is not fully implemented yet</li>
+</ul>
+
+### TODO
+
+<ul>
+    <li>Add support fow windows</li>
+    <li>fix pyinstaller issues</li>
+    <li>create a vscode package</li>
+</ul>
