@@ -204,35 +204,42 @@ def execute_django_command(cmd):
 
 
 def deploy():
-    hidden_imports = ['http.cookies', 'html.parser',
-                      'settings', 'apps', 'django.template.defaulttags',
-                      'django.templatetags.i18n', 'django.template.loader_tags',
-                      'django.utils.translation'
-                      ]
-    for app in settings.INSTALLED_APPS:
-        if app.startswith('django.'):
-            hidden_imports.append(app + '.apps')
-        else:
-            hidden_imports.append(app)
+    if not os.path.isfile(configFile):
+        print("Missing config.json")
+        hidden_imports = []
+    else:
+        with open(configFile) as f:
+            config = json.load(f)
+        hidden_imports = config["hidden-imports"]
+    if config["django"] :
+        for app in settings.INSTALLED_APPS:
+            if app.startswith('django.'):
+                hidden_imports.append(app + '.apps')
+            else:
+                hidden_imports.append(app)
 
-            cmd = "pyinstaller __main__.py "
+    cmd = "pyinstaller __main__.py "
     for i in hidden_imports:
         cmd += " --hidden-import "
         cmd += i
 
     os.system(cmd)
-    if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    if config["django"]:
         dist_dir = os.path.join(os.path.join(settings.BASE_DIR, 'dist'), '__main__')
-        if os.path.isdir(dist_dir):
-            shutil.copy(settings.DATABASES['default']['NAME'], dist_dir)
-    if settings.LANGUAGES is not None:
-        for lang in settings.LANGUAGES:
-            execute_django_command(["makemessages", "-l", lang[0]])
-        execute_django_command(["compilemessages"])
-        try:
-            shutil.copytree(settings.LOCALE_PATHS[0], os.path.join(dist_dir, '.locale'))
-        except Exception as e:
-            print(e)
+        if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+            if os.path.isfile(settings.DATABASES['default']['NAME']) :
+                if os.path.isdir(dist_dir):
+                    shutil.copy(settings.DATABASES['default']['NAME'], dist_dir)
+            else:
+                print("{} was not found".format(settings.DATABASES['default']['NAME'])  )
+        if settings.LANGUAGES is not None:
+            for lang in settings.LANGUAGES:
+                execute_django_command(["makemessages", "-l", lang[0]])
+            execute_django_command(["compilemessages"])
+            try:
+                shutil.copytree(settings.LOCALE_PATHS[0], os.path.join(dist_dir, '.locale'))
+            except Exception as e:
+                print(e)
 
 
 if __name__ == '__main__':
@@ -259,5 +266,3 @@ if __name__ == '__main__':
         deploy()
     else:
         execute_django_command(sys.argv[1:])
-
-

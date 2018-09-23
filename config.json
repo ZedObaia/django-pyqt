@@ -4,5 +4,11 @@
     {
         "rcc" : "",
         "uic" : ""
-    }
+    },
+    "django" : false,
+    "hidden-imports" : [],
+    "hidden-example" : ["http.cookies", "html.parser",
+        "settings", "django.template.defaulttags",
+        "django.templatetags.i18n", "django.template.loader_tags",
+        "django.utils.translation"]
 }
