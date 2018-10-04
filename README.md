@@ -1,16 +1,20 @@
 # django-pyqt
 This is a tool to help you develop desktop applications using Python Qt bindings of your choice for the 'front end' with django ORM for the backend.
 
- Currently we only support *nix.
+> Now also available as a <a href="https://marketplace.visualstudio.com/items?itemName=zedObaia.django-pyqt"> VScode extension</a>
 
-Tested with PyQt5.11 and Django 2.1 on Ubuntu 18.4
+Tested with PyQt5.11 and Django 2.1 on Ubuntu 18.4 and windows 10
 
 Note that you need PyQt5 and Django to be already installed
 ***
 
 # Installation
 >Clone the repo then run:
-`sudo ./setup.py`
+#### *nix
+`sudo python3 setup.py`
+### Windows 
+Open a cmd or a ps as admin and run
+`python3 setup.py`
 
 ## Usage
 ##### Start new project using
@@ -58,7 +62,7 @@ Edit `hidden-imports` to add imports for pyinstaller
 Note that leaving apps blank will try to migrate all apps
 
 ##### To use other django manage.py commands
-`python3 manage.py commandm`
+`python3 manage.py command`
 
 ***
 #### Qt Commands
@@ -91,8 +95,6 @@ Now you can start using django (models, authentication, ... ) inside your applic
 ### TODO
 
 <ul>
-    <li>Add support for windows</li>
     <li>fix pyinstaller issues</li>
-    <li>create a vscode package</li>
     <li>create a pip package</li>
 </ul>
