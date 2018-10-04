@@ -62,7 +62,7 @@ Edit `hidden-imports` to add imports for pyinstaller
 Note that leaving apps blank will try to migrate all apps
 
 ##### To use other django manage.py commands
-`python3 manage.py commandm`
+`python3 manage.py command`
 
 ***
 #### Qt Commands
