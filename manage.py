@@ -31,7 +31,6 @@ def start_new_app(app_name):
         print("App with the same <{}> name already exists".format(app_name))
         return
     os.mkdir(dir_name)
-    print(dir_name)
     temp_path = os.path.join("apps", app_name)
     if app_name.islower():
         execute_django_command(["startapp", app_name.upper(), temp_path])
@@ -81,7 +80,7 @@ def compile_sources(files, cmd=""):
     except Exception as e:
         print("Please add field {} in config.json".format(e))
         return
-    
+
     if cmd == "uic":
         try:
             uic_path = config["paths"]["uic"]
@@ -92,8 +91,8 @@ def compile_sources(files, cmd=""):
             print("uic path is not found in config.json, using default <{}> on path".format(uic_list[binding_list.index(binding)]))
             uic_path = uic_list[binding_list.index(binding)]
 
-    
-    if cmd == "rcc":   
+
+    if cmd == "rcc":
         try:
             rcc_path = config["paths"]["rcc"]
             if len(rcc_path.strip()) == 0:
@@ -180,11 +179,16 @@ def migrate_apps(apps, cmd=""):
                 print("App <{}> does not exist, make sure you typed the name correctly".format(app))
                 print('')
 
+    apps_to_prepare = ""
+    for app in settings.INSTALLED_APPS :
+        if app.startswith("apps."):
+            apps_to_prepare += app.split('.')[1]
+            apps_to_prepare += " "
     if cmd == "makemigrations":
-        print('Preparing')
+        print('Preparing {}'.format(apps_to_prepare))
         execute_django_command(apps_to_migrate)
     elif cmd == "migrate":
-        print("Migrating")
+        print("Migrating {}".format(apps_to_prepare))
         execute_django_command(['migrate'])
 
 
