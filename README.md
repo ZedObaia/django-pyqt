@@ -1,6 +1,8 @@
 # django-pyqt
 This is a tool to help you develop desktop applications using Python Qt bindings of your choice for the 'front end' with django ORM for the backend.
 
+> Now also available as a <a href="https://marketplace.visualstudio.com/items?itemName=zedObaia.django-pyqt"> VScode extension</a>
+
 Tested with PyQt5.11 and Django 2.1 on Ubuntu 18.4 and windows 10
 
 Note that you need PyQt5 and Django to be already installed
@@ -95,5 +97,4 @@ Now you can start using django (models, authentication, ... ) inside your applic
 <ul>
     <li>fix pyinstaller issues</li>
     <li>create a pip package</li>
-    <li>create a vscode package</li>
 </ul>
