@@ -29,7 +29,7 @@ def main():
 
     if args['startproject']:
         home_dir = os.path.expanduser('~')
-        template_dir = os.path.join(home_dir, '.pyqt5-django-orm')
+        template_dir = os.path.join(home_dir, '.django-pyqt')
         if not os.path.exists(template_dir):
             print('Please follow installation instructions')
             return
