@@ -24,9 +24,12 @@ def main():
     src_dir = os.path.abspath('.')
 
     copy(src_dir, cfg_dir)
-    if platform.system() == 'Linux' or platform.system() == 'Darwin':
+    if platform.system() == 'Linux':
         copy('pyqt-admin', '/usr/bin')
         os.system('chmod +x /usr/bin/pyqt-admin')
+    elif platform.system() == 'Darwin' :
+        copy('pyqt-admin', '/usr/local/bin/')
+        os.system('chmod +x /usr/local/bin/pyqt-admin')
     elif platform.system() == 'Windows':
         path_to_try = [os.path.join(os.environ['WINDIR'], 'system'),
                     os.path.join(os.environ['WINDIR'], 'System'),
